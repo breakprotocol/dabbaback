@@ -1,4 +1,31 @@
 var jsArray = [
+
+    './bower_components/jStorage/jstorage.js',
+    './bower_components/jquery-ui/jquery-ui.js',
+    './bower_components/peity/jquery.peity.min.js',
+    './bower_components/jquery-slimscroll/jquery.slimscroll.min.js',
+    './bower_components/angular-ui-select/dist/select.min.js',
+    './bower_components/angulartics-google-analytics/dist/angulartics-google-analytics.min.js',
+    './bower_components/angular-ui-tinymce/src/tinymce.js',
+    './bower_components/angularjs-imageupload-directive/public/javascripts/imageupload.js',
+    './bower_components/ngmap/build/scripts/ng-map.min.js',
+    './bower_components/angular-bootstrap-toggle-switch/angular-toggle-switch.min.js',
+    './bower_components/angular-toastr/dist/angular-toastr.js',
+    './bower_components/angular-toastr/dist/angular-toastr.tpls.js',
+    './bower_components/angular-hotkeys/build/hotkeys.js',
+    './bower_components/moment/min/moment.min.js',
+    './bower_components/angular-ui-sortable/sortable.js',
+    './bower_components/intl-tel-input/lib/libphonenumber/build/utils.js',
+    './bower_components/textAngular/dist/textAngular-rangy.min.js',
+    './bower_components/textAngular/dist/textAngular-sanitize.min.js',
+    './bower_components/textAngular/dist/textAngular.min.js',
+    './bower_components/angular-ui-date/dist/date.js',
+    './bower_components/js-xlsx/xlsx.js',
+    './bower_components/file-saver/FileSaver.min.js',
+    './bower_components/async/dist/async.js',
+
+
+
     //JS & jQuery Libs
     './bower_components/jquery/dist/jquery.min.js',
     './bower_components/bootstrap-sass/assets/javascripts/bootstrap.min.js',
@@ -23,10 +50,18 @@ var jsArray = [
 
     //Work files
     './js/app.js',
-    './js/language.js',
-    './js/controllers.js',
-    './js/templateservice.js',
-    './js/navigation.js',
+    './js/languages/language.js',
+    './js/controllers/controller.js',
+    './js/controllers/specialawards.js',
+    './js/factories/navigation.js',   
+    './js/directives/directive.js',
+    './js/filters/filter.js',
+    './js/services/template.js',
+    './js/services/jsonService.js',
+    './js/services/base64Service.js',
+   
+
+
 
     //please do not change it
     './w/js/templates.js',
@@ -150,7 +185,7 @@ gulp.task('minify:css', function() {
     var rename = require('gulp-rename');
     var minifyCss = require('gulp-minify-css');
     var concat = require('gulp-concat');
-    return gulp.src('./w/main.css')
+    return gulp.src('./w/import.css')
 
     .pipe(minifyCss({
             keepSpecialComments: 0,

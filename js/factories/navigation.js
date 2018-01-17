@@ -1,3 +1,13 @@
+var adminURL = "";
+if (isproduction) {
+    // adminURL = "http://www.wohlig.co.in/demo/index.php";
+    adminurl = "http://localhost/boxxitAngularPhp/backend/request.php";    
+} else {
+    adminurl = "http://localhost/boxxitAngularPhp/backend/request.php";
+    // adminURL = "https://opportunist-toleran.000webhostapp.com/backend/request.php";    
+    // adminURL = "http://localhost:8080/backend/request.php";
+    
+}
 var imgurl = adminurl + "/upload/";
 
 var imgpath = imgurl + "readFile";

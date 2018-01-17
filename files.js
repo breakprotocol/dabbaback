@@ -8,10 +8,10 @@ module.exports = [
     'bower_components/peity/jquery.peity.min.js',
     'bower_components/jquery-slimscroll/jquery.slimscroll.min.js',
     'bower_components/angular/angular.js',
-    // 'bower_components/angular-animate/angular-animate.min.js',
+    'bower_components/angular-animate/angular-animate.min.js',
     'bower_components/angular-flexslider/angular-flexslider.js',
     'bower_components/angular-ui-select/dist/select.min.js',
-    // 'bower_components/angular-sanitize/angular-sanitize.min.js',
+    'bower_components/angular-sanitize/angular-sanitize.min.js',
     'bower_components/angular-ui-router/release/angular-ui-router.min.js',
     'bower_components/angular-bootstrap/ui-bootstrap.min.js',
     'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
@@ -38,6 +38,14 @@ module.exports = [
     'bower_components/angular-ui-date/dist/date.js',
     'bower_components/js-xlsx/xlsx.js',
     'bower_components/FileSaver.js/FileSaver.min.js',
+    'bower_components/swiper/dist/js/swiper.js',
+    'bower_components/smart-app-banner/smart-app-banner.js',
+    'bower_components/angular/angular.min.js',
+    'bower_components/angulartics-google-analytics/dist/angulartics-ga.min.js',
+    
+
+
+
 
     //App.js
     'backend/js/app.js',

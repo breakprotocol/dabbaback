@@ -31,191 +31,9 @@ switch($service)
 	uploadImage($method,$mysqli,$data);
 	break;
 
-	case "login":
-	login($method,$mysqli,$data);
-	break;
-
-	case "contacts":
-	contacts($method,$mysqli,$data);
-	break;
-
 	default :
 	echo "Don't do this";
 	break;
-}
-
-function getCount($mysqli,$table){
-	$query = "SELECT COUNT(*) FROM $table";
-	$result = $mysqli->query($query) or die($mysqli->error.__LINE__);
-	$row =  $result->fetch_row();
-	$total =  $row[0];
-	return $total;	
-}
-
-function getAll($mysqli,$data,$query,$table){
-	// Find out how many items are in the table
-	$total =  getCount($mysqli,$table);
-	// How many items to list per page
-		 $limit = 10;
-	// How many pages will there be
-		 $pages = ceil($total / $limit);
-	// What page are we currently on?
-		 $page = $data['page'];
-	// Calculate the offset for the query
-		 $offset = ($page - 1)  * $limit;
-
-		 if(!$query){
-			 $query = "SELECT * from $table order by _id limit ? offset ?";
-		 }
-
-		 $stmt=$mysqli->prepare($query);
-		 $stmt->bind_param('ss', $limit,$offset);
-		 $stmt->execute();
-		 $result = $stmt->get_result();
-		 $contacts = mysqli_fetch_all ($result, MYSQLI_ASSOC);
-
-		$myObj = new \stdClass();
-		$myObj->result = $contacts;
-		$myObj->totalCount = $total;
-		
-		return $myObj;
-
-}
-
-function contacts($method,$mysqli,$data)
-{
-	$data = json_decode($data, true);
-	
-	if ($method=="getAll")
-	{
-		$query=null;
-		$sendObj = getAll($mysqli,$data,$query,'contacts');
-		echo json_encode($sendObj);
-	}
-
-	if ($method=="getOne")
-	{
-
-		$stmt = $mysqli->prepare('SELECT * FROM contacts WHERE _id = ?');
-		$stmt->bind_param('s', $data['_id']);
-		$stmt->execute();
-		$result = $stmt->get_result();
-		$json = mysqli_fetch_all ($result, MYSQLI_ASSOC);
-		echo json_encode($json );
-	}
-
-	if ($method=="create")
-	{
-
-		//Getting the data 
-		$name = $data['name'];
-		$number = $data['number'];
-		$email = $data['email'];
-		$address = $data['address'];
-	
-		$stmt = $mysqli->prepare('INSERT INTO contacts (name, number, email, address) VALUES (?, ?, ?, ?)');
-		$stmt->bind_param('ssss', $name,$number,$email,$address);
-		$result = $stmt->execute();
-		echo json_encode($result);
-	}
-
-	if ($method=="delete")
-	{
-
-		$id = $data['id'];
-		$stmt = $mysqli->prepare('DELETE FROM contacts WHERE _id = ?');
-		$stmt->bind_param('s', $id);
-		$result = $stmt->execute();
-		echo json_encode($result);
-	}
-
-	if($method=="update")
-	{
-		$query = "UPDATE contacts SET";
-		$comma = " ";
-		$id = $data['_id'];
-		$whitelist = array(
-			'name',
-			'number',
-			'email',
-			'address'
-		);
-
-		foreach($data as $key => $val) {
-			if( ! empty($val) && in_array($key, $whitelist)) {
-				$query .= $comma . $key . " = '" . $mysqli->real_escape_string(trim($val)) . "'";
-				$comma = ", ";
-			}
-		}
-		$query .= " where _id = ?";
-		$stmt = $mysqli->prepare($query);
-		$stmt->bind_param('s', $id);
-		$result = $stmt->execute();
-
-		echo $result;
-	}
-
-}
-
-function login($method,$mysqli,$data)
-{
-	// echo $data;
-	$data = json_decode($data,true);
-	// print_r $data;
-	if($method=="login")
-	{
-		$username = $data['username'];
-		// echo $username;
-		$password = $data['password'];
-		$loginResponse = array();
-		$stmt=$mysqli->prepare('SELECT * FROM user_details where user_name = ?');
-		$stmt->bind_param('s', $username);
-		$stmt->execute();
-		$result = $stmt->get_result();
-		if ($result->num_rows === 1)
-		{
-			$user_details = mysqli_fetch_all ($result, MYSQLI_ASSOC);
-			json_encode($user_details);
-			if (password_verify($password, $user_details[0]['user_pass']))
-			{	
-				json_encode($user_details[0]['access_level']);
-				$loginResponse = array('access' => $user_details[0]['access_level'],'success' => 'true');
-				echo json_encode($loginResponse);
-		}
-			else
-			{
-				$loginResponse = array('success' => 'false');
-				echo json_encode($loginResponse);
-			}	
-				
-		}
-		else
-		{
-			$loginResponse = array('success' => 'false');
-			echo json_encode($loginResponse);
-		}
-		
-
-	}
-
-	if($method=="register")
-	{
-		$username = $data['username'];
-		$password = $data['password'];
-		$access = $data['access'];
-		$password_hash = password_hash($password,PASSWORD_DEFAULT);
-		$stmt = $mysqli->prepare('INSERT INTO user_details(user_name,user_pass,access_level) values (?, ?, ?)');
-				$stmt->bind_param('sss',$username,$password_hash,$access);
-				$result = $stmt->execute();
-				if($result)
-					echo $result;
-				else
-				{
-					echo "Theres some problem inserting the new raw material";
-					
-				}
-	}
-
 }
 
 
@@ -225,17 +43,10 @@ function categories($method,$mysqli,$data)
 	
 	if ($method=="getAll")
 	{
-		if($data && $data['page']){
-			$query = null;
-			$sendObj = getAll($mysqli,$data,$query,'categories');
-			echo json_encode($sendObj);
-		}else{
-			$query="select * from categories";
-			$result = $mysqli->query($query) or die($mysqli->error.__LINE__);
-			$json = mysqli_fetch_all ($result, MYSQLI_ASSOC);
-			echo json_encode($json );
-		}
-	
+		$query="select * from categories";
+		$result = $mysqli->query($query) or die($mysqli->error.__LINE__);
+		$json = mysqli_fetch_all ($result, MYSQLI_ASSOC);
+		echo json_encode($json );
 	}
 
 	if ($method=="getOne")
@@ -305,23 +116,17 @@ function categories($method,$mysqli,$data)
 
 }
 
+
 function sub_categories($method,$mysqli,$data)
 {
 
 	$data = json_decode($data, true);
 
 	if ($method=="getAll"){
-
-		if($data && $data['page']){
-			$query = "SELECT sub_categories._id ,sub_categories.name AS sub_cat_name, categories._id AS cat_id,categories.name AS cat_name FROM sub_categories LEFT JOIN categories ON sub_categories.category=categories._id order by _id limit ? offset ?";
-			$sendObj = getAll($mysqli,$data,$query,'sub_categories');
-			echo json_encode($sendObj);
-		}else{
-			$query="SELECT sub_categories._id ,sub_categories.name AS sub_cat_name, categories._id AS cat_id,categories.name AS cat_name FROM sub_categories LEFT JOIN categories ON sub_categories.category=categories._id";
-			$result = $mysqli->query($query) or die($mysqli->error.__LINE__);
-			$json = mysqli_fetch_all ($result, MYSQLI_ASSOC);
-			echo json_encode($json );
-		}
+		$query="SELECT sub_categories._id ,sub_categories.name AS sub_cat_name, categories._id AS cat_id,categories.name AS cat_name FROM sub_categories LEFT JOIN categories ON sub_categories.category=categories._id";
+		$result = $mysqli->query($query) or die($mysqli->error.__LINE__);
+		$json = mysqli_fetch_all ($result, MYSQLI_ASSOC);
+		echo json_encode($json );
 	}else if ($method=="getAllByCat"){
 		$category = $data['category'];
 		$stmt = $mysqli->prepare('SELECT * FROM sub_categories WHERE category = ?');
@@ -397,17 +202,11 @@ function product($method,$mysqli,$data)
 			$json = mysqli_fetch_all ($result, MYSQLI_ASSOC);
 			echo json_encode($json );
 		}else if ($method=="getAll"){
-			if($data && $data['page']){
-				$query = "SELECT products._id ,products.name AS prod_name,products.link AS prod_img,products.priority AS prod_priority,products.status AS prod_status,sub_categories.name AS sub_cat_name FROM products LEFT JOIN sub_categories ON products.sub_categories=sub_categories._id order by _id limit ? offset ?";
-				$sendObj = getAll($mysqli,$data,$query,'products');
-				echo json_encode($sendObj);
-			}else{
-				$stmt = $mysqli->prepare('SELECT products._id ,products.name AS prod_name,products.link AS prod_img,products.priority AS prod_priority,products.status AS prod_status,sub_categories.name AS sub_cat_name FROM products LEFT JOIN sub_categories ON products.sub_categories=sub_categories._id');
-				$stmt->execute();
-				$result = $stmt->get_result();
-				$json = mysqli_fetch_all ($result, MYSQLI_ASSOC);
-				echo json_encode($json );
-			}
+			$stmt = $mysqli->prepare('SELECT products._id ,products.name AS prod_name,products.link AS prod_img,products.priority AS prod_priority,products.status AS prod_status,sub_categories.name AS sub_cat_name FROM products LEFT JOIN sub_categories ON products.sub_categories=sub_categories._id');
+			$stmt->execute();
+			$result = $stmt->get_result();
+			$json = mysqli_fetch_all ($result, MYSQLI_ASSOC);
+			echo json_encode($json );
 		}else if($method=="create"){
 			//Getting the data 
 			$name = $data['name'];

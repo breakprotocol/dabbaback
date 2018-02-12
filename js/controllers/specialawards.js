@@ -21,19 +21,14 @@ myApp.controller('CategoryCtrl', function ($scope, TemplateService, NavigationSe
     }
   }
 
-  // TABLE VIEW 
-  $scope.getAllCategories = function () {
-    // $scope.search = $scope.formData.keyword;
-    NavigationService.getAllCategories(function (data) {
-      console.log(data);
-      $scope.items = data;
-      $scope.totalItems = data.length;
-      // $scope.maxRow = data.data.options.count;
+  $scope.viewTable = function () {
+    $scope.formData.page = $scope.formData.page++;
+    NavigationService.getAll("/categories/getAll", $scope.formData, function (data) {
+      $scope.items = data.result;
+      $scope.totalItems = data.totalCount;
     });
   }
-
-  $scope.getAllCategories();
-  // TABLE VIEW END
+  $scope.viewTable();
 
   // DELETE
   $scope.confDel = function (data) {
@@ -129,6 +124,7 @@ myApp.controller('SubCategoryCtrl', function ($scope, TemplateService, Navigatio
   $scope.menutitle = NavigationService.makeactive("Sub Category");
   TemplateService.title = $scope.menutitle;
   $scope.navigation = NavigationService.getnav();
+
   $scope.formData = {};
   $scope.formData.page = 1;
   $scope.formData.type = '';
@@ -145,21 +141,14 @@ myApp.controller('SubCategoryCtrl', function ($scope, TemplateService, Navigatio
     }
   }
 
-  // TABLE VIEW 
-  $scope.getAllSubCategories = function () {
-    // $scope.search = $scope.formData.keyword;
-    NavigationService.getAllSubCategories(function (data) {
-      console.log(data);
-      $scope.items = data;
-      $scope.totalItems = data.length;
-      // $scope.maxRow = data.data.options.count;
+  $scope.viewTable = function () {
+    $scope.formData.page = $scope.formData.page++;
+    NavigationService.getAll("/sub_categories/getAll", $scope.formData, function (data) {
+      $scope.items = data.result;
+      $scope.totalItems = data.totalCount;
     });
   }
-
-  $scope.getAllSubCategories();
-  // TABLE VIEW END
-
-
+  $scope.viewTable();
 
   // DELETE
   $scope.confDel = function (data) {
@@ -275,19 +264,19 @@ myApp.controller('ProductsCtrl', function ($scope, TemplateService, NavigationSe
   $scope.navigation = NavigationService.getnav();
   $scope.configData = {};
 
-  // TABLE VIEW 
-  $scope.getAllProducts = function () {
-    // $scope.search = $scope.formData.keyword;
-    NavigationService.getAllProducts(function (data) {
-      console.log(data);
-      $scope.items = data;
-      $scope.totalItems = data.length;
-      // $scope.maxRow = data.data.options.count;
+  $scope.formData = {};
+  $scope.formData.page = 1;
+  $scope.formData.type = '';
+  $scope.formData.keyword = '';
+
+  $scope.viewTable = function () {
+    $scope.formData.page = $scope.formData.page++;
+    NavigationService.getAll("/products/getAll", $scope.formData, function (data) {
+      $scope.items = data.result;
+      $scope.totalItems = data.totalCount;
     });
   }
-
-  $scope.getAllProducts();
-  // TABLE VIEW END
+  $scope.viewTable();
 
   // DELETE
   $scope.confDel = function (data) {
@@ -403,6 +392,135 @@ myApp.controller('DetailProductsCtrl', function ($scope, TemplateService, Naviga
           $scope.formData.priority = "";
           $scope.forData.satus = "";
           $scope.subCategories.selectedSubCategory = {};
+        }
+      }
+    }
+    NavigationService.saveProducts(url, data, callback);
+  }
+
+  $scope.onCancel = function (sendTo) {
+
+    $state.go(sendTo);
+  };
+});
+
+myApp.controller('ContactsCtrl', function ($scope, TemplateService, NavigationService, $timeout, $stateParams, $state, toastr, $uibModal) {
+  //Used to name the .html file
+  $scope.template = TemplateService.changecontent("contacts");
+  $scope.menutitle = NavigationService.makeactive("Contacts");
+  TemplateService.title = $scope.menutitle;
+  $scope.navigation = NavigationService.getnav();
+
+  $scope.formData = {};
+  $scope.formData.page = 1;
+  $scope.formData.type = '';
+  $scope.formData.keyword = '';
+
+  $scope.searchInTable = function (data) {
+    $scope.formData.page = 1;
+    if (data.length >= 2) {
+      $scope.formData.keyword = data;
+      $scope.viewTable();
+    } else if (data.length == '') {
+      $scope.formData.keyword = data;
+      $scope.viewTable();
+    }
+  }
+  $scope.viewTable = function () {
+    $scope.formData.page = $scope.formData.page++;
+    NavigationService.getAll("/contacts/getAll", $scope.formData, function (data) {
+      $scope.items = data.result;
+      $scope.totalItems = data.totalCount;
+    });
+  }
+  $scope.viewTable();
+
+  // DELETE
+  $scope.confDel = function (data) {
+    $scope.deleteId = data;
+    $scope.modalInstance = $uibModal.open({
+      animation: $scope.animationsEnabled,
+      templateUrl: 'views/modal/delete.html',
+      backdrop: 'static',
+      keyboard: false,
+      size: 'sm',
+      scope: $scope
+    });
+  };
+
+  $scope.noDelete = function () {
+    $scope.modalInstance.close();
+  }
+
+  $scope.delete = function (id) {
+    // console.log(data);
+    var obj = {};
+    obj.id = id;
+    NavigationService.delete("/contacts/delete", obj, function (data) {
+      if (data == '1' || data == "true") {
+        toastr.success('Successfully Deleted', 'Sponsor Page');
+        $scope.modalInstance.close();
+        $scope.getAll();
+      } else {
+        toastr.error('Something Went Wrong while Deleting', 'Sponsor Page');
+      }
+    });
+  }
+  // DELETE END
+});
+
+myApp.controller('CreateContactsCtrl', function ($scope, TemplateService, NavigationService, $timeout, $stateParams, $state, toastr, $uibModal) {
+  //Used to name the .html file
+  $scope.template = TemplateService.changecontent("createcontacts");
+  $scope.menutitle = NavigationService.makeactive("Contacts");
+  TemplateService.title = $scope.menutitle;
+  $scope.navigation = NavigationService.getnav();
+  $scope.formData = {};
+
+
+  if ($stateParams.id) {
+    $scope.title = "Edit";
+    var data = {
+      "_id": $stateParams.id
+    }
+    NavigationService.getOne('/contacts/getOne', data, function (data) {
+      console.log("formData.number", data[0].number);
+      $scope.formData = {
+        "_id": data[0]._id,
+        "name": data[0].name,
+        "number": parseInt(data[0].number),
+        "email": data[0].email,
+        "address": data[0].address
+      };
+    });
+  }
+
+
+  $scope.saveData = function (data) {
+    var url = "";
+    if ($stateParams.id) {
+      //edit
+      url = adminurl + "/contacts/update"
+      var callback = function (data) {
+        if (data == '1' || data == 'true') {
+          toastr.success("Data updated successfully", 'Success');
+        }else{
+          toastr.error("Number Already Exists", 'Error');
+        }
+      }
+    } else {
+      //create
+      url = adminurl + "/contacts/create"
+      var callback = function (data) {
+        if (data == '1' || data == 'true') {
+          toastr.success("Data saved successfully", 'Success');
+          $scope.formData._id = "";
+          $scope.formData.name = "";
+          $scope.formData.number = "";
+          $scope.formData.email = "";
+          $scope.formData.address = "";
+        }else{
+          toastr.error("Number Already Exists", 'Error');
         }
       }
     }

@@ -1,11 +1,17 @@
 var adminURL = "";
 if (isproduction) {
     // adminURL = "http://www.wohlig.co.in/demo/index.php";
-    adminurl = "http://localhost/boxxitAngularPhp/backend/request.php";    
+    // adminurl = "http://boxxit-backend.000webhostapp.com/api/request.php"; 
+    adminurl = "http://backend.boxxit.in/api/request.php"; 
+    
+    // adminurl = "https://boxxit-backend.000webhostapp.com/api/request.php";    
+    
 } else {
-    adminurl = "http://localhost/boxxitAngularPhp/backend/request.php";
+    // adminurl = "http://boxxit-backend.000webhostapp.com/api/request.php";
     // adminURL = "https://opportunist-toleran.000webhostapp.com/backend/request.php";    
     // adminURL = "http://localhost:8080/backend/request.php";
+    adminURL = "http://localhost/boxxitAngularBackend/backend/request.php";
+    
     
 }
 var imgurl = adminurl + "/upload/";
@@ -33,6 +39,12 @@ myApp.factory('NavigationService', function ($http) {
             classis: "activeColor",
             sref: "#/products",
             icon: "phone"
+        },
+        {
+            name: "Contacts",
+            classis: "activeColor",
+            sref: "#/contacts",
+            icon: "phone"
         }
     ];
 
@@ -50,6 +62,16 @@ myApp.factory('NavigationService', function ($http) {
 
         removeAccessToken: function (data, callback) {
             $.jStorage.flush();
+        },
+
+        login:function(url,data,callback){
+            $http({
+                method: "POST",
+                url: adminurl + url,
+                data: data
+            }).then(function (data) {
+                callback(data.data);
+            });
         },
 
         profile: function (callback, errorCallback) {
@@ -76,6 +98,42 @@ myApp.factory('NavigationService', function ($http) {
                 }
             }
             return menuname;
+        },
+
+        getAll: function(url,data,callback){
+            $http({
+                method:"POST",
+                url:adminurl + url,
+                data:data
+            }).then(function(data){
+                if(data){
+                    callback(data.data);
+                }
+            });
+        },
+
+        getOne: function(url,data,callback){
+            $http({
+                method:"POST",
+                url:adminurl + url,
+                data:data
+            }).then(function(data){
+                if(data){
+                    callback(data.data);
+                }
+            });
+        },
+
+        create: function(url,data,callback){
+            $http({
+                method:"POST",
+                url:url,
+                data:data
+            }).success(function(data){
+                if(data){
+                    callback(data);
+                }
+            });
         },
 
         delete: function (url, data, callback) {

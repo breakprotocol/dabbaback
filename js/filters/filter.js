@@ -162,4 +162,4 @@ myApp.filter('truncate', function () {
             }
         }
     }
-})
+});

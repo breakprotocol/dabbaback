@@ -42,6 +42,7 @@ module.exports = [
     'bower_components/smart-app-banner/smart-app-banner.js',
     'bower_components/angular/angular.min.js',
     'bower_components/angulartics-google-analytics/dist/angulartics-ga.min.js',
+    'bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js',
     
 
 

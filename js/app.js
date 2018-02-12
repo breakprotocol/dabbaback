@@ -30,6 +30,21 @@ myApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locat
             controller: 'DashboardCtrl',
         })
 
+        //contacts
+        .state('contacts', {
+            url: "/contacts",
+            templateUrl: "views/template.html",
+            controller: 'ContactsCtrl'
+        })
+
+        //create contacts
+        .state('createcontacts', {
+            url: "/createcontacts/:id",
+            templateUrl: "views/template.html",
+            controller: 'CreateContactsCtrl'
+        })
+
+
         //category
         .state('category', {
             url: "/category",
@@ -130,7 +145,7 @@ myApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locat
 
     $urlRouterProvider.otherwise("/dashboard");
     $locationProvider.html5Mode(false).hashPrefix('');
-    // $locationProvider.html5Mode(isproduction);
+    // $locationProvider.html5Mode(true);
 });
 
 myApp.config(function ($translateProvider) {

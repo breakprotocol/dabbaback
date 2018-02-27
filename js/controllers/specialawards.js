@@ -586,7 +586,7 @@ myApp.controller('ContactsEntryUserCtrl', function ($scope, TemplateService, Nav
           $scope.formData.address = "";
           $scope.formData.website = "";
           $scope.formData.note = "";
-          alert(data.id);
+          toastr.success(data.id);
         }else{
           toastr.error("Number Already Exists", 'Error');
         }

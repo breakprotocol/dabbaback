@@ -112,11 +112,25 @@ function contacts($method,$mysqli,$data)
 		$number = $data['number'];
 		$email = $data['email'];
 		$address = $data['address'];
+		$company_name = $data['companyName'];
+		$website = $data['website'];
+		$note = $data['note'];
+		
+		
 	
-		$stmt = $mysqli->prepare('INSERT INTO contacts (name, number, email, address) VALUES (?, ?, ?, ?)');
-		$stmt->bind_param('ssss', $name,$number,$email,$address);
+		$stmt = $mysqli->prepare('INSERT INTO contacts (name, number, email, address, company_name, website, note) VALUES (?, ?, ?, ?, ?, ?, ?)');
+		$stmt->bind_param('sssssss', $name,$number,$email,$address,$company_name,$website,$note);
 		$result = $stmt->execute();
-		echo json_encode($result);
+		
+		if(json_encode($result)){
+			$id = mysqli_insert_id($mysqli);
+			$myObj = new \stdClass();
+			$myObj->id =$id;
+			$myObj->status = $result;
+			echo json_encode($myObj);
+		 }else{
+			echo json_encode($result);
+		 }
 	}
 
 	if ($method=="delete")

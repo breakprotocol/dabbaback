@@ -532,3 +532,71 @@ myApp.controller('CreateContactsCtrl', function ($scope, TemplateService, Naviga
     $state.go(sendTo);
   };
 });
+
+myApp.controller('ContactsEntryUserCtrl', function ($scope, TemplateService, NavigationService, $timeout, $stateParams, $state, toastr, $uibModal) {
+  //Used to name the .html file
+  // $scope.template = TemplateService.changecontent("contactsEntryUser");
+  $scope.menutitle = NavigationService.makeactive("Contacts Entry");
+  TemplateService.title = $scope.menutitle;
+  $scope.navigation = NavigationService.getnav();
+  $scope.formData = {};
+
+
+  if ($stateParams.id) {
+    $scope.title = "Edit";
+    var data = {
+      "_id": $stateParams.id
+    }
+    NavigationService.getOne('/contacts/getOne', data, function (data) {
+      console.log("formData.number", data[0].number);
+      $scope.formData = {
+        "_id": data[0]._id,
+        "name": data[0].name,
+        "number": parseInt(data[0].number),
+        "email": data[0].email,
+        "address": data[0].address
+      };
+    });
+  }
+
+
+  $scope.saveData = function (data) {
+    var url = "";
+    if ($stateParams.id) {
+      //edit
+      url = adminurl + "/contacts/update"
+      var callback = function (data) {
+        if (data == '1' || data == 'true') {
+          toastr.success("Data updated successfully", 'Success');
+        }else{
+          toastr.error("Number Already Exists", 'Error');
+        }
+      }
+    } else {
+      //create
+      url = adminurl + "/contacts/create"
+      var callback = function (data) {
+        if (data.status == '1' || data.status == 'true') {
+          toastr.success("Data saved successfully", 'Success');
+          $scope.formData._id = "";
+          $scope.formData.name = "";
+          $scope.formData.companyName = "";
+          $scope.formData.number = "";
+          $scope.formData.email = "";
+          $scope.formData.address = "";
+          $scope.formData.website = "";
+          $scope.formData.note = "";
+          alert(data.id);
+        }else{
+          toastr.error("Number Already Exists", 'Error');
+        }
+      }
+    }
+    NavigationService.saveProducts(url, data, callback);
+  }
+
+  $scope.onCancel = function (sendTo) {
+
+    $state.go(sendTo);
+  };
+});

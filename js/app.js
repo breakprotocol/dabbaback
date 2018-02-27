@@ -44,6 +44,13 @@ myApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locat
             controller: 'CreateContactsCtrl'
         })
 
+        //create 
+         .state('contacts-entry-user', {
+            url: "/contactsentryuser/:id",
+            templateUrl: "views/content/contactsEntryUser.html",
+            controller: 'ContactsEntryUserCtrl'
+        })
+
 
         //category
         .state('category', {
@@ -97,6 +104,12 @@ myApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locat
             url: "/login",
             templateUrl: "views/login.html",
             controller: 'LoginCtrl'
+        })
+
+        .state('login-to-cpanel', {
+            url: "/loginToCpanel",
+            templateUrl: "views/loginToCpanel.html",
+            controller: 'LoginToCpanelCtrl'
         })
 
         
